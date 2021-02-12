@@ -1,0 +1,65 @@
+/*
+TC; O(m+n)
+SC: O(n)
+
+Approach: we are trying to compare every character in main string with pattern
+1. the problem is if any character doesnt match then we need to compare each character again in main string
+this will take more time.
+2. the second problem is, even if we formulate something to keep the pointer of main string moving forward,
+still pattern string will have pointer moving to 0. This needs to be optimized.
+
+ */
+
+class StrStr{
+    public int strStr(String haystack, String needle) {
+
+        int i = 0, j = 0;
+        if (needle == null || needle.length() == 0) return 0;
+        int lps[] = lps(needle);
+
+        while(i < haystack.length()){
+
+            if (haystack.charAt(i) == needle.charAt(j)){
+                i++;
+                j++;
+                if (j == needle.length()){
+                    return i - needle.length();
+                }
+            }
+            else if (j > 0 && haystack.charAt(i) != needle.charAt(j)){
+                j = lps[j-1];
+            }
+            else if(j == 0 && haystack.charAt(i) != needle.charAt(j)){
+                i++;
+            }
+        }
+
+        return -1;
+    }
+
+    private int[] lps(String needle){
+
+        int[] lps = new int[needle.length()];
+        lps[0] = 0;
+        int i = 1, j = 0;
+        while(i < needle.length()){
+
+            //if characters are same then expand the prefix window which also
+            //check suffix window
+            if (needle.charAt(i) == needle.charAt(j)){
+                j++;
+                lps[i] = j;
+                i++;
+            }
+            else if(j > 0 && needle.charAt(i)!= needle.charAt(j)){
+                j = lps[j-1];
+            }
+            else if(j == 0 && needle.charAt(i)!= needle.charAt(j)){
+                lps[i] = 0;
+                i++;
+            }
+        }
+
+        return lps;
+    }
+}
